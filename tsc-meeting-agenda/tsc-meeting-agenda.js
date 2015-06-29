@@ -4,8 +4,8 @@ const ghauth   = require('ghauth')
 
 const authOptions = { configName: 'iojs-tools' }
     , repos       = [
-          { org: 'nodejs', repo: 'io.js' }
-        , { org: 'nodejs', repo: 'node'  }
+          { org: 'nodejs', repo: 'node'  }
+        , { org: 'nodejs', repo: 'io.js' }
         , { org: 'joyent', repo: 'node'  }
       ]
 
