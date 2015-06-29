@@ -1,0 +1,26 @@
+{
+  "name": "v8-changelog",
+  "version": "1.0.0",
+  "description": "",
+  "main": "v8-changelog.js",
+  "scripts": {
+  },
+  "author": "Rod <rod@vagg.org> (http://r.va.gg/)",
+  "license": "MIT",
+  "dependencies": {
+    "bl": "~1.0.0",
+    "ghauth": "~3.0.0",
+    "ghrepos": "~1.2.0",
+    "hyperquest": "~1.2.0",
+    "minimist": "~1.1.1",
+    "semver": "~4.3.6"
+  },
+  "bin": {
+    "v8-changelog": "./v8-changelog.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rvagg/iojs-tools.git"
+  },
+  "preferGlobal": true
+}

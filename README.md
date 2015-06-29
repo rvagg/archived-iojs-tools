@@ -10,6 +10,10 @@ A utility to collect the list of issues & PRs that have been labelled with `tsc-
 
 A work-in-progress tool to generate a list of new contributors to io.js, not currently used for anything yet but the plan is to use it to help with a welcoming procedure (finding the list being the automated bit, the human bit coming afterwards).
 
+## v8-changelog
+
+A tool to make V8 changelogs more easily accessible and grokkable, prints output in Markdown format, can trim meaningless releases and restrict the versions to a provided semver range.
+
 ## _Also_
 
 **[changelog-maker](https://github.com/rvagg/changelog-maker)** is also part of this collection but is published to npm and is maintained in a separate repo.
