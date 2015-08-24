@@ -13,6 +13,7 @@ const spawn          = require('child_process').spawn
     , chalk          = require('chalk')
     , argv           = require('minimist')(process.argv.slice(2))
     , commitToOutput = require('changelog-maker/commit-to-output')
+    , collectCommitLabels = require('changelog-maker/collect-commit-labels')
 
     , pkgFile        = path.join(process.cwd(), 'package.json')
     , pkgData        = fs.existsSync(pkgFile) ? require(pkgFile) : {}
@@ -52,10 +53,20 @@ function onBranch2CommitList (err, list) {
 
   console.log(`${list.length} commits on ${branch2} that are not on ${branch1}:`)
 
-  list = list.map(function (commit) {
-    return commitToOutput(commit, simple, ghId)
-  })
+  collectCommitLabels(list, function (err) {
+    if (err)
+      throw err
 
+    list = list.map(function (commit) {
+      return commitToOutput(commit, simple, ghId)
+    })
+
+    printCommits(list)
+  })
+}
+
+
+function printCommits (list) {
   var out = list.join('\n') + '\n'
 
   if (!process.stdout.isTTY)

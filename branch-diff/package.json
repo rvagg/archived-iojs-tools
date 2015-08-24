@@ -8,7 +8,7 @@
   "dependencies": {
     "bl": "~1.0.0",
     "chalk": "~1.1.0",
-    "commit-stream": "~1.0.0",
+    "commit-stream": "~1.0.1",
     "deep-equal": "~1.0.0",
     "list-stream": "~1.0.0",
     "minimist": "~1.1.1",
