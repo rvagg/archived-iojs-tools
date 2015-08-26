@@ -1,12 +1,10 @@
 const ghauth   = require('ghauth')
+    , ghrepos  = require('ghrepos')
     , ghissues = require('ghissues')
     , map      = require('map-async')
 
-const authOptions = { configName: 'iojs-tools' }
-    , repos       = [
-        , { org: 'nodejs', repo: 'node' }
-        , { org: 'joyent', repo: 'node'  }
-      ]
+const authOptions = { configName: 'iojs-tools', scopes: [ 'user', 'repo'  ] }
+    , repos       = [ { org: 'joyent', repo: 'node' } ]
 
 
 ghauth(authOptions, function (err, authData) {
@@ -23,7 +21,17 @@ ghauth(authOptions, function (err, authData) {
     )
   }
 
-  map(repos, fetchIssues, printIssues)
+  ghrepos.listOrg(authData, 'nodejs', { type: 'public' }, function (err, repolist) {
+    if (err)
+      throw err
+
+    var ra = repos.concat(repolist.map(function (r) { return { org: 'nodejs', repo: r.name } }))
+    map(ra, fetchIssues, function (err, repoLists) {
+      if (err)
+        throw err
+      printIssues(ra, repoLists)
+    })
+  })
 })
 
 
@@ -33,12 +41,11 @@ function cleanMarkdown (txt) {
 }
 
 
-function printIssues (err, repoLists) {
-  if (err)
-    throw err
-
+function printIssues (ra, repoLists) {
   repoLists.forEach(function (list, i) {
-    console.log(`### ${repos[i].org}/${repos[i].repo}\n`)
+    if (!list.length)
+      return
+    console.log(`### ${ra[i].org}/${ra[i].repo}\n`)
 
     console.log(list.map(function (issue) {
       return `* ${cleanMarkdown(issue.title)} [#${issue.number}](${issue.html_url})`
