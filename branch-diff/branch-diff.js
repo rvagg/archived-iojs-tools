@@ -92,7 +92,7 @@ function isInList (commit, commitList) {
     if (commit.sha === c.sha)
       return true
     if (commit.summary === c.summary
-        && equal(commit.description, c.description)
+        //&& equal(commit.description, c.description)
         && commit.prUrl && c.prUrl
         && commit.prUrl === c.prUrl)
       return true
