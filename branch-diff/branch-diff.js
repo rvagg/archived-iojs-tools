@@ -12,6 +12,7 @@ const spawn          = require('child_process').spawn
     , pkgtoId        = require('pkg-to-id')
     , chalk          = require('chalk')
     , argv           = require('minimist')(process.argv.slice(2))
+    , map            = require('map-async')
     , commitToOutput = require('changelog-maker/commit-to-output')
     , collectCommitLabels = require('changelog-maker/collect-commit-labels')
 
@@ -31,26 +32,36 @@ if (!branch1 || !branch2)
   throw new Error('Must supply two branch names to compare')
 
 
-collect(branch1)
-  .pipe(listStream.obj(onBranch1CommitList))
+map([ branch1, branch2 ], function (branch, callback) {
+  collect(branch).pipe(listStream.obj(callback))
+}, onCollected)
 
 
-function onBranch1CommitList (err, list) {
+function onCollected (err, branchCommits) {
   if (err)
     throw err
 
-  console.log(`${list.length} commits on ${branch1}...`)
+  [ branch1, branch2 ].forEach(function (branch, i) {
+    console.log(`${branchCommits[i].length} commits on ${branch}...`)
+  })
 
-  collect(branch2)
-    .pipe(filterStream(list))
-    .pipe(listStream.obj(onBranch2CommitList))
-}
+  function isInList (commit) {
+    return branchCommits[0].some(function (c) {
+      if (commit.sha === c.sha)
+        return true
+      if (commit.summary === c.summary
+          //&& equal(commit.description, c.description)
+          && commit.prUrl && c.prUrl
+          && commit.prUrl === c.prUrl)
+        return true
+      return false
+    })
+  }
 
-
-function onBranch2CommitList (err, list) {
-  if (err)
-    throw err
-
+  var list = branchCommits[1].filter(function filter (commit) {
+    return !isInList(commit)
+  })
+  
   console.log(`${list.length} commits on ${branch2} that are not on ${branch1}:`)
 
   collectCommitLabels(list, function (err) {
@@ -73,31 +84,6 @@ function printCommits (list) {
     out = chalk.stripColor(out)
 
   process.stdout.write(out)
-}
-
-
-function filterStream (branch1List) {
-  return through2.obj(filter)
-
-  function filter (commit, enc, callback) {
-    if (!isInList(commit, branch1List))
-      this.push(commit)
-    callback()
-  }
-}
-
-
-function isInList (commit, commitList) {
-  return commitList.some(function (c) {
-    if (commit.sha === c.sha)
-      return true
-    if (commit.summary === c.summary
-        //&& equal(commit.description, c.description)
-        && commit.prUrl && c.prUrl
-        && commit.prUrl === c.prUrl)
-      return true
-    return false
-  })
 }
 
 
