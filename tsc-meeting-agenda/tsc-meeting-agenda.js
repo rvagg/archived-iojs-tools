@@ -4,7 +4,7 @@ const ghauth   = require('ghauth')
     , map      = require('map-async')
 
 const authOptions = { configName: 'iojs-tools', scopes: [ 'user', 'repo'  ] }
-    , repos       = [ { org: 'joyent', repo: 'node' } ]
+    , repos       = [] // { org: 'joyent', repo: 'node' } ]
 
 
 ghauth(authOptions, function (err, authData) {
