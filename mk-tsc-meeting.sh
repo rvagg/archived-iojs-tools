@@ -32,8 +32,8 @@ Or in your local time:
 
 ## Links
 
-* **Minutes Google Doc**: <${prev_doc_url}>
-* _Previous Minutes Google Doc: <${curr_doc_url}>_
+* **Minutes Google Doc**: <${curr_doc_url}>
+* _Previous Minutes Google Doc: <${prev_doc_url}>_
 
 ## Agenda
 
