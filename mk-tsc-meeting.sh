@@ -1,13 +1,17 @@
 #!/bin/bash
 
-# only works on Linux
+# only works on Linux or OSX with coreutils installed
+
+# if running OSX with coreutils installed
+PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+__dirname="$(CDPATH= cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 meeting_date=$(TZ=UTC date --date="Wednesday 8pm" --rfc-3339=seconds)
 common_fmt="%a %d-%b-%Y %R"
 utc_short=$(TZ=UTC date --date="$meeting_date" +"%F")
 
 echo -n "Previous Meeting Google Docs URL: "
 read prev_doc_url
-echo -n "Previous This Google Docs URL: "
+echo -n "This Meeting Google Docs URL: "
 read curr_doc_url
 
 cat << EOF
@@ -39,7 +43,7 @@ Or in your local time:
 
 Extracted from **tsc-agenda** labelled issues and pull requests from the **nodejs org** prior to the meeting.
 
-$(node ./tsc-meeting-agenda/)
+$(node ${__dirname}/tsc-meeting-agenda/)
 
 ## Invited
 
@@ -50,7 +54,7 @@ $(node ./tsc-meeting-agenda/)
 * @Fishrock123 (TSC)
 * @indutny (TSC)
 * @jasnell (TSC)
-* @mhdawson (TSC)
+* @mhdawson (observer)
 * @misterdjules (TSC)
 * @mikeal (observer)
 * @mscdex (TSC)
@@ -58,7 +62,7 @@ $(node ./tsc-meeting-agenda/)
 * @piscisaureus (TSC)
 * @rvagg (TSC)
 * @shigeki (TSC)
-* @srl295 (TSC)
+* @srl295 (observer)
 * @trevnorris (TSC)
 
 ## Notes

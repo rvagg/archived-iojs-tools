@@ -14,9 +14,17 @@ A work-in-progress tool to generate a list of new contributors to io.js, not cur
 
 A tool to make V8 changelogs more easily accessible and grokkable, prints output in Markdown format, can trim meaningless releases and restrict the versions to a provided semver range.
 
+## pr-metadata
+
+Print out metadata that can be copied and pasted into a commit message, based on Node.js core repository practice
+
 ## _Also_
 
+Projects graduating out of this repo include:
+
 **[changelog-maker](https://github.com/rvagg/changelog-maker)** is also part of this collection but is published to npm and is maintained in a separate repo.
+
+**[branch-diff](https://github.com/rvagg/branch-diff)** uses a lot of **changelog-maker** code to provide similar output but is for preparing a list of commits that are on one branch but not on another by smartly using Node.js core style metadata to remove duplicates (a smart `git log b1..b2`).
 
 ## License & Copyright
 
