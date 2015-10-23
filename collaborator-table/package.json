@@ -1,0 +1,18 @@
+{
+  "name": "collaborator-table",
+  "version": "1.0.0",
+  "description": "",
+  "main": "collaborator-table.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rod <rod@vagg.org> (http://r.va.gg/)",
+  "license": "MIT",
+  "dependencies": {
+    "bl": "~1.0.0",
+    "ghauth": "~3.0.0",
+    "ghusers": "~0.2.3",
+    "hyperquest": "~1.2.0",
+    "map-async": "~0.1.1"
+  }
+}
