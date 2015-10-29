@@ -25,6 +25,7 @@ Node Foundation TSC Meeting $utc_short
 **UTC $(TZ=UTC date --date="$meeting_date" +"$common_fmt")**:
 
 * San Francisco: $(TZ=America/Los_Angeles date --date="$meeting_date" +"$common_fmt")
+* New York: $(TZ=America/New_York date --date="$meeting_date" +"$common_fmt")
 * Amsterdam: $(TZ=Europe/Amsterdam date --date="$meeting_date" +"$common_fmt")
 * Moscow: $(TZ=Europe/Moscow date --date="$meeting_date" +"$common_fmt")
 * Sydney: $(TZ=Australia/Sydney date --date="$meeting_date" +"$common_fmt")
@@ -43,7 +44,7 @@ Or in your local time:
 
 Extracted from **tsc-agenda** labelled issues and pull requests from the **nodejs org** prior to the meeting.
 
-$(node ${__dirname}/tsc-meeting-agenda/)
+$(cd ${__dirname}/node-meeting-agenda/ && node . ctc-agenda)
 
 ## Invited
 
@@ -67,7 +68,7 @@ $(node ${__dirname}/tsc-meeting-agenda/)
 
 ## Notes
 
-The agenda comes from issues labelled with `tsc-agenda` across **all of the repositories in the nodejs org**. Please label any additional issues that should be on the agenda before the meeting starts. I'm using a [tool](https://github.com/rvagg/iojs-tools/tree/master/tsc-meeting-agenda) to fetch the list so it's not a big deal to collate.
+The agenda comes from issues labelled with \`tsc-agenda\` across **all of the repositories in the nodejs org**. Please label any additional issues that should be on the agenda before the meeting starts. I'm using a [tool](https://github.com/rvagg/iojs-tools/tree/master/meeting-agenda) to fetch the list so it's not a big deal to collate.
 
 ## Joining the meeting
 
