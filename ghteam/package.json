@@ -1,0 +1,25 @@
+{
+  "name": "ghteam",
+  "version": "1.0.0",
+  "description": "Print out information about Node.js GitHub Teams",
+  "main": "ghteam.js",
+  "scripts": {},
+  "author": "James M Snell <jasnell@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "bl": "^1.0.0",
+    "ghauth": "^3.0.0",
+    "ghteams": "^0.3.0",
+    "hyperquest": "^1.2.0",
+    "minimist": "^1.2.0",
+    "pkg-to-id": "0.0.3"
+  },
+  "bin": {
+    "ghteam": "./ghteam.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rvagg/iojs-tools.git"
+  },
+  "preferGlobal": true
+}
