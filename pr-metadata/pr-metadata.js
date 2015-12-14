@@ -24,7 +24,7 @@ const path          = require('path')
 
     , collabRe      = '^\\* \\[([^\\]]+)\\]\\([^\\)]+\\) - \\*\\*([^\\*]+)\\*\\* &lt;([^&]+)&gt;$'
       //e.g.: * [chrisdickinson](https://github.com/chrisdickinson) - **Chris Dickinson** &lt;christopher.s.dickinson@gmail.com&gt;
-    , lgtmRe        = /(\\n|\s|^)lgtm(\\n|\s|$)/i
+    , lgtmRe        = /(\W|^)lgtm(\W|$)/i
 
     , ghUser        = pkgId.user || 'nodejs'
     , ghRepo        = pkgId.name || 'node'

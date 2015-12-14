@@ -16,7 +16,7 @@ read curr_doc_url
 
 cat << EOF
 
-Node Foundation TSC Meeting $utc_short
+Node Foundation CTC Meeting $utc_short
 
 --------------------------------------
 
@@ -32,7 +32,7 @@ Node Foundation TSC Meeting $utc_short
 * Tokyo: $(TZ=Asia/Tokyo date --date="$meeting_date" +"$common_fmt")
 
 Or in your local time:
-* http://www.timeanddate.com/worldclock/fixedtime.html?msg=Node+Foundation+TSC+Meeting+${utc_short}&iso=$(TZ=UTC date --date="$meeting_date" +"%Y%m%dT20")
+* http://www.timeanddate.com/worldclock/fixedtime.html?msg=Node+Foundation+CTC+Meeting+${utc_short}&iso=$(TZ=UTC date --date="$meeting_date" +"%Y%m%dT20")
 * or http://www.wolframalpha.com/input/?i=8pm+UTC%2C+$(TZ=UTC date --date="$meeting_date" +"%b+%d%%2C+%Y")+in+local+time
 
 ## Links
@@ -42,33 +42,33 @@ Or in your local time:
 
 ## Agenda
 
-Extracted from **tsc-agenda** labelled issues and pull requests from the **nodejs org** prior to the meeting.
+Extracted from **ctc-agenda** labelled issues and pull requests from the **nodejs org** prior to the meeting.
 
 $(cd ${__dirname}/node-meeting-agenda/ && node . ctc-agenda)
 
 ## Invited
 
-* @bnoordhuis (TSC)
-* @chrisdickinson (TSC)
-* @cjihrig (TSC)
+* @bnoordhuis (CTC)
+* @chrisdickinson (CTC)
+* @cjihrig (CTC)
 * @domenic (observer)
-* @Fishrock123 (TSC)
-* @indutny (TSC)
-* @jasnell (TSC)
+* @Fishrock123 (CTC)
+* @indutny (CTC)
+* @jasnell (CTC)
 * @mhdawson (observer)
-* @misterdjules (TSC)
+* @misterdjules (CTC)
 * @mikeal (observer)
-* @mscdex (TSC)
-* @orangemocha (TSC)
-* @piscisaureus (TSC)
-* @rvagg (TSC)
-* @shigeki (TSC)
+* @mscdex (CTC)
+* @orangemocha (CTC)
+* @piscisaureus (CTC)
+* @rvagg (CTC)
+* @shigeki (CTC)
 * @srl295 (observer)
-* @trevnorris (TSC)
+* @trevnorris (CTC)
 
 ## Notes
 
-The agenda comes from issues labelled with \`tsc-agenda\` across **all of the repositories in the nodejs org**. Please label any additional issues that should be on the agenda before the meeting starts. I'm using a [tool](https://github.com/rvagg/iojs-tools/tree/master/meeting-agenda) to fetch the list so it's not a big deal to collate.
+The agenda comes from issues labelled with \`ctc-agenda\` across **all of the repositories in the nodejs org**. Please label any additional issues that should be on the agenda before the meeting starts. I'm using a [tool](https://github.com/rvagg/iojs-tools/tree/master/meeting-agenda) to fetch the list so it's not a big deal to collate.
 
 ## Joining the meeting
 
