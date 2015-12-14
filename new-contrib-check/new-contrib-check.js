@@ -15,6 +15,7 @@ const ghauth     = require('ghauth')
 
 const authOptions = { configName: 'iojs-tools' }
     , gitEmailCmd = 'git log --format="%aE" | sort | uniq'
+    , afterDate   = new Date(Date.now() - 1000 * 60 * 60 * 24 * 7)
 
 
 var done = after(3, onDataComplete)
@@ -23,17 +24,17 @@ var done = after(3, onDataComplete)
   , mailmap
 
 
-gitEmailList(function (err, emails) {
+gitEmailList((err, emails) => {
   if (err)
     return done(err)
 
-  emails = emails.map(function (email) { return email.toString() })
+  emails = emails.map((email) => email.toString())
   gitEmails = emails
   done()
 })
 
 
-fs.readFile('./.mailmap', 'utf8', function (err, data) {
+fs.readFile('./.mailmap', 'utf8', (err, data) => {
   if (err)
     return done(err)
 
@@ -41,7 +42,7 @@ fs.readFile('./.mailmap', 'utf8', function (err, data) {
   done()
 })
 
-getPullRequestData(function (err, list) {
+getPullRequestData((err, list) => {
   if (err)
     return done(err)
 
@@ -55,7 +56,7 @@ function getPullRequestData (callback) {
     if (err)
       throw err
 
-    list = list.filter(Boolean).map(function (pr) {
+    list = list.filter(Boolean).map((pr) => {
       return {
           name    : pr.from_name
         , email   : pr.from_email
@@ -69,11 +70,11 @@ function getPullRequestData (callback) {
     callback(null, list)
   }
 
-  ghauth(authOptions, function (err, authData) {
+  ghauth(authOptions, (err, authData) => {
     if (err)
       throw err
 
-    ghpulls.list(authData, 'nodejs', 'io.js', { state: 'all' }, function (err, list) {
+    ghpulls.list(authData, 'nodejs', 'node', { state: 'all', afterDate }, (err, list) => {
       if (err)
         throw err
 
@@ -83,9 +84,9 @@ function getPullRequestData (callback) {
 }
 
 function collectAuthor (pull, callback) {
-  var url = `https://patch-diff.githubusercontent.com/raw/nodejs/io.js/pull/${pull.number}.patch`
+  var url = `https://patch-diff.githubusercontent.com/raw/nodejs/node/pull/${pull.number}.patch`
 
-  hyperquest.get(url).pipe(bl(function (err, data) {
+  hyperquest.get(url).pipe(bl((err, data) => {
     if (err)
       return callback(err)
 
@@ -96,7 +97,7 @@ function collectAuthor (pull, callback) {
       return callback()
       //return callback(new Error(`No 'From:' in patch for #${pull.number}`))
 
-    pull.from_name  = decodeMime(from[1])
+    pull.from_name  = from[1].split(/\s/).map((w) => decodeMime(w)).join(' ')
     pull.from_email = from[2]
 
     callback(null, pull)
@@ -111,7 +112,7 @@ function gitEmailList (callback) {
 
   child.stdout.pipe(split2()).pipe(listStream(callback))
 
-  child.stderr.pipe(bl(function (err, _data) {
+  child.stderr.pipe(bl((err, _data) => {
     if (_data.length)
       process.stderr.write(_data)
 
@@ -119,7 +120,7 @@ function gitEmailList (callback) {
       callback(err)
   }))
 
-  child.on('close', function (code) {
+  child.on('close', (code) => {
     if (code) {
       callback(new Error(`git command [${gitEmailCmd}] exited with code ${code}`))
       console.error(`git command [${gitEmailCmd}] exited with code ${code}`)
@@ -132,9 +133,7 @@ function onDataComplete (err) {
   if (err)
     throw err
 
-  //console.log(pullRequests)
-
-  pullRequests = pullRequests.filter(function (pr) {
+  pullRequests = pullRequests.filter((pr) => {
     if (mailmap.indexOf(`<${pr.email}>`) > -1)
       return false
 
