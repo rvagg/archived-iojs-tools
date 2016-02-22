@@ -9,7 +9,7 @@ const hyperquest = require('hyperquest')
 
     , readme     = 'https://raw.githubusercontent.com/nodejs/node/master/README.md'
     , userapi    = 'https://api.github.com/users/{user}'
-    , collabRe   = /^\* \[([^\]]+)\]\(https:\/\/github\.com\/[^\)]+\) - \*\*([^\*]+)\*\*/
+    , collabRe   = /^\* \[([^\]]+)\]\(https?:\/\/github\.com\/[^\)]+\) - \*\*([^\*]+)\*\*/
 
 
 let authData
