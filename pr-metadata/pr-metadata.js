@@ -148,7 +148,7 @@ function processPr (pr) {
           throw err
 
         commentlist = commentlist.filter((c) => {
-          return lgtmRe.test(c.body) && c.user.login.toLowerCase() != authData.user.toLowerCase()
+          return lgtmRe.test(c.body)
         })
 
         listCollaborators((err, collaborators) => {
@@ -157,15 +157,19 @@ function processPr (pr) {
 
           console.log(`PR-URL: ${pr.url}`)
 
-          console.log(commentlist.map((c) => {
+          let revby = []
+          commentlist.forEach((c) => {
             let user = collaborators[c.user.login.toLowerCase()]
             if (user)
               user = `${user.name} <${user.email}>`
             else
               user = c.user.login
 
-            return `Reviewed-By: ${user}`
-          }).join('\n'))
+            let txt = `Reviewed-By: ${user}`
+            if (revby.indexOf(txt) < 0)
+              revby.push(txt)
+          })
+          console.log(revby.join('\n'))
         })
       })
     }
