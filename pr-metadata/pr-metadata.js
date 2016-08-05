@@ -22,7 +22,7 @@ const path          = require('path')
     , pkgData       = fs.existsSync(pkgFile) ? require(pkgFile) : {}
     , pkgId         = pkgToId(pkgData)
 
-    , collabRe      = '^\\* \\[([^\\]]+)\\]\\([^\\)]+\\) - \\*\\*([^\\*]+)\\*\\* &lt;([^&]+)&gt;$'
+    , collabRe      = '\\* \\[([^\\]]+)\\]\\([^\\)]+\\) -\\s\\*\\*([^\\*]+)\\*\\* &lt;([^&]+)&gt;'
       //e.g.: * [chrisdickinson](https://github.com/chrisdickinson) - **Chris Dickinson** &lt;christopher.s.dickinson@gmail.com&gt;
     , lgtmRe        = /(\W|^)lgtm(\W|$)/i
 
