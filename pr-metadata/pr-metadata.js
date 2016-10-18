@@ -22,7 +22,8 @@ const path          = require('path')
     , pkgData       = fs.existsSync(pkgFile) ? require(pkgFile) : {}
     , pkgId         = pkgToId(pkgData)
 
-    , collabRe      = '^\\* \\[([^\\]]+)\\]\\([^\\)]+\\) - \\*\\*([^\\*]+)\\*\\* &lt;([^&]+)&gt;$'
+
+    , collabRe      = '^\\* \\[([^\\]]+)\\]\\([^\\)]+\\) -\n\\*\\*([^\\*]+)\\*\\* &lt;([^&]+)&gt;$'
       //e.g.: * [chrisdickinson](https://github.com/chrisdickinson) - **Chris Dickinson** &lt;christopher.s.dickinson@gmail.com&gt;
     , lgtmRe        = /(\W|^)lgtm(\W|$)/i
 
@@ -143,35 +144,52 @@ function processPr (pr) {
     })
 
     function processFullPr (pr) {
-      ghissues.listComments(authData, ghUser, ghRepo, pr.number, (err, commentlist) => {
+      let comments = []
+        , collaborators
+        , done = after(3, afterComments)
+
+      ;[ ghissues, ghpulls ].forEach((api) => {
+        api.listComments(authData, ghUser, ghRepo, pr.number, (err, commentlist) => {
+          if (err)
+            return done(err)
+
+          comments = comments.concat(commentlist.filter((c) => lgtmRe.test(c.body)))
+
+          done()
+        })
+      })
+
+      listCollaborators((err, _collaborators) => {
+        if (err)
+          return done(err)
+
+        collaborators = _collaborators
+
+        done()
+      })
+
+
+      function afterComments (err) {
         if (err)
           throw err
 
-        commentlist = commentlist.filter((c) => {
-          return lgtmRe.test(c.body)
+        console.log(`PR-URL: ${pr.url}`)
+
+        let revby = []
+        comments.forEach((c) => {
+          let user = collaborators[c.user.login.toLowerCase()]
+          if (user)
+            user = `${user.name} <${user.email}>`
+          else
+            user = c.user.login
+
+          let txt = `Reviewed-By: ${user}`
+          if (revby.indexOf(txt) < 0)
+            revby.push(txt)
         })
 
-        listCollaborators((err, collaborators) => {
-          if (err)
-            throw err
-
-          console.log(`PR-URL: ${pr.url}`)
-
-          let revby = []
-          commentlist.forEach((c) => {
-            let user = collaborators[c.user.login.toLowerCase()]
-            if (user)
-              user = `${user.name} <${user.email}>`
-            else
-              user = c.user.login
-
-            let txt = `Reviewed-By: ${user}`
-            if (revby.indexOf(txt) < 0)
-              revby.push(txt)
-          })
-          console.log(revby.join('\n'))
-        })
-      })
+        console.log(revby.join('\n'))
+      }
     }
   })
 }
