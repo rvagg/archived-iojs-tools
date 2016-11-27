@@ -9,10 +9,10 @@
   "author": "Rod <rod@vagg.org> (http://r.va.gg/)",
   "license": "MIT",
   "dependencies": {
-    "bl": "~1.0.0",
-    "ghauth": "~3.0.0",
+    "bl": "~1.1.2",
+    "ghauth": "~3.2.1",
     "ghusers": "~0.2.3",
-    "hyperquest": "~1.2.0",
+    "hyperquest": "~2.1.2",
     "map-async": "~0.1.1"
   }
 }

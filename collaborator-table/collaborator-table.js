@@ -5,33 +5,23 @@ const hyperquest = require('hyperquest')
     , map        = require('map-async')
     , ghauth     = require('ghauth')
     , ghusers    = require('ghusers')
+    , fs         = require('fs')
+    , path       = require('path')
 
 
+    , columns    = 12
     , readme     = 'https://raw.githubusercontent.com/nodejs/node/master/README.md'
     , userapi    = 'https://api.github.com/users/{user}'
-    , collabRe   = /^\* \[([^\]]+)\]\(https?:\/\/github\.com\/[^\)]+\) - \*\*([^\*]+)\*\*/
+    , collabRe   = /^\* \[([^\]]+)\]\(https?:\/\/github\.com\/[^\)]+\) -\n\*\*([^\*]+)\*\*/m
+    , avatarCacheFile = path.join(__dirname, '.avatar_cache')
 
 
 let authData
+  , avatarCache = {}
 
-
-function fetch (url, callback) {
-  hyperquest
-    .get(url, { headers: { 'user-agent': 'node.js collaborator table' }})
-    .pipe(bl(callback))
-}
-
-
-function fetchAvatar (collaborator, callback) {
-  ghusers.get(authData, collaborator.handle, (err, data) => {
-    if (err)
-      return callback(err)
-
-    collaborator.avatar = data.avatar_url
-    callback(null, collaborator)
-  })
-}
-
+try {
+  avatarCache = JSON.parse(fs.readFileSync(avatarCacheFile, 'utf8'))
+} catch (e) {}
 
 ghauth({ configName: 'collaborator-table' }, (err, _authData) => {
   if (err)
@@ -42,12 +32,40 @@ ghauth({ configName: 'collaborator-table' }, (err, _authData) => {
 })
 
 
+function fetch (url, callback) {
+  hyperquest
+    .get(url, { headers: { 'user-agent': 'node.js collaborator table' }})
+    .pipe(bl(callback))
+}
+
+
+function fetchAvatar (collaborator, callback) {
+  function ret (avatar) {
+    collaborator.avatar = avatar
+    avatarCache[collaborator.handle] = avatar
+    callback(null, collaborator)
+  }
+
+  if (avatarCache[collaborator.handle])
+    return ret(avatarCache[collaborator.handle])
+
+  ghusers.get(authData, collaborator.handle, (err, data) => {
+    if (err)
+      return callback(err)
+    ret(data.avatar_url)
+  })
+}
+
+
 function compile () {
   fetch(readme, (err, data) => {
     if (err)
         throw err
 
-    let collaborators = data.toString().match(new RegExp(collabRe.source, 'gm')).map((c) => {
+    let collabMatch = data.toString().match(new RegExp(collabRe.source, 'gm'))
+    if (!collabMatch)
+      throw new Error('Could not find collaborator section in README')
+    let collaborators = collabMatch.map((c) => {
       let m = c.match(collabRe)
       return { handle: m[1], name: m[2] }
     })
@@ -59,7 +77,7 @@ function compile () {
         throw err
 
       collaborators = collaborators.reduce((p, c, i) => {
-        if (i % 9 === 0) {
+        if (i % columns === 0) {
           if (i !== 0) {
             p[p.length - 2] += '\n\t</tr>'
             p[p.length - 1] += '\n\t</tr>'
@@ -72,18 +90,20 @@ function compile () {
         return p
       }, []).join('\n') + '\n</tr>'
 
-      console.log(`
+      let html = `
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<body>
+<table>
+${collaborators}
+</table>
+</body>
+</html>
+      `
 
-  <html>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <body>
-  <table>
-  ${collaborators}
-  </table>
-  </body>
-  </html>
-
-      `)
+      fs.writeFileSync(avatarCacheFile, JSON.stringify(avatarCache, null, 2), 'utf8')
+      fs.writeFileSync('table.html', html, 'utf8')
+      console.log('Wrote table to table.html')
     }
   })
 }
