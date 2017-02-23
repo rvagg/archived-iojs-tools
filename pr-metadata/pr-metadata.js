@@ -23,8 +23,11 @@ const path          = require('path')
     , pkgId         = pkgToId(pkgData)
 
 
-    , collabRe      = '^\\* \\[([^\\]]+)\\]\\([^\\)]+\\) -\n\\*\\*([^\\*]+)\\*\\* &lt;([^&]+)&gt;$'
-      //e.g.: * [chrisdickinson](https://github.com/chrisdickinson) - **Chris Dickinson** &lt;christopher.s.dickinson@gmail.com&gt;
+    , collabRe      = '^\\* \\[([^\\]]+)\\]\\([^\\)]+\\) -\n\\*\\*([^\\*]+)\\*\\* &lt;([^&]+)&gt;( \(.+\))?$'
+    /* e.g.
+* [Trott](https://github.com/Trott) -
+**Rich Trott** &lt;rtrott@gmail.com&gt; (he/him)
+    */
     , lgtmRe        = /(\W|^)lgtm(\W|$)/i
 
     , ghUser        = pkgId.user || 'nodejs'
@@ -145,8 +148,9 @@ function processPr (pr) {
 
     function processFullPr (pr) {
       let comments = []
+        , reviews
         , collaborators
-        , done = after(3, afterComments)
+        , done = after(4, afterComments)
 
       ;[ ghissues, ghpulls ].forEach((api) => {
         api.listComments(authData, ghUser, ghRepo, pr.number, (err, commentlist) => {
@@ -157,6 +161,14 @@ function processPr (pr) {
 
           done()
         })
+      })
+
+      ghpulls.listReviews(authData, ghUser, ghRepo, pr.number, (err, reviews) => {
+        if (err)
+          return done(err)
+
+        comments = comments.concat(reviews.filter((r) => r.state == 'APPROVED'))
+        done()
       })
 
       listCollaborators((err, _collaborators) => {
