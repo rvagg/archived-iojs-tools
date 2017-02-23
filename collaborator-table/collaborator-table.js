@@ -15,6 +15,9 @@ const hyperquest = require('hyperquest')
     , collabRe   = /^\* \[([^\]]+)\]\(https?:\/\/github\.com\/[^\)]+\) -\n\*\*([^\*]+)\*\*/m
     , avatarCacheFile = path.join(__dirname, '.avatar_cache')
 
+// this data obtained from source of https://github.com/nodejs/node/graphs/contributors?from=2016-01-01&to=2016-11-28&type=c
+// by taking every user with >0 commits
+    , nowcommitters = require('/tmp/2016-committers.json').map((o) => Object.keys(o)[0].toLowerCase())
 
 let authData
   , avatarCache = {}
@@ -69,6 +72,8 @@ function compile () {
       let m = c.match(collabRe)
       return { handle: m[1], name: m[2] }
     })
+
+    collaborators = collaborators.filter((c) => nowcommitters.indexOf(c.handle.toLowerCase()) > -1)
 
     map(collaborators, fetchAvatar, afterMap)
 
